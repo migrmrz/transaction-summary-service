@@ -1,0 +1,11 @@
+db:
+  file: db/transactions.db
+sendgrid:
+  base-url: http://example.com
+  sender: noreply@example.com 
+  api-key: some-api-key
+  template-id: d-aacbaf6b707e44e3991bf46ff74abe62
+  max-idle-conn: 2
+  timeout: 5s
+  send-email: true
+ 
