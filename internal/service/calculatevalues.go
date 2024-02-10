@@ -5,11 +5,11 @@ import (
 	"strings"
 	"time"
 
-	"my-service.com/transactions/internal/clients/filereader"
+	"myservice.com/transactions/internal/clients/filereader"
 )
 
 // GetAverages calculates the credit and debit averages from transactions
-func (s *Service) GetAverages(transactions []filereader.Transaction) (averageDebit, averageCredit int64) {
+func getAverages(transactions []filereader.Transaction) (averageDebit, averageCredit int64) {
 	var debitTotal int64
 	var creditTotal int64
 
@@ -33,7 +33,7 @@ func (s *Service) GetAverages(transactions []filereader.Transaction) (averageDeb
 }
 
 // GetTotalBalance calculates the total amount from transactions
-func (s *Service) GetTotalBalance(transactions []filereader.Transaction) (totalBalance int64) {
+func getTotalBalance(transactions []filereader.Transaction) (totalBalance int64) {
 	for _, transaction := range transactions {
 		money := convertTransactionValue(transaction.Txn)
 		totalBalance += int64(money)
@@ -43,7 +43,7 @@ func (s *Service) GetTotalBalance(transactions []filereader.Transaction) (totalB
 }
 
 // GetTransactionsByMonth gets the number of transactions by month from records
-func (s *Service) GetTransactionsByMonth(transactions []filereader.Transaction) map[string]int {
+func getTransactionsByMonth(transactions []filereader.Transaction) map[string]int {
 	monthsCount := make(map[string]int)
 
 	for _, transaction := range transactions {

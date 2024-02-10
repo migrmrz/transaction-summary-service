@@ -13,17 +13,17 @@ type Transaction struct {
 	Txn  string
 }
 
-type ReaderHandler interface {
-	GetTransactions() ([]Transaction, error)
-}
+//type ReaderHandler interface {
+//	GetTransactions() ([]Transaction, error)
+//}
 
 type Reader struct {
 	fileName string
 }
 
 // New creates a new Reader client
-func New(fileName string) ReaderHandler {
-	return &Reader{
+func New(fileName string) Reader {
+	return Reader{
 		fileName: fileName,
 	}
 }

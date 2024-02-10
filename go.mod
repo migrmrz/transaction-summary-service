@@ -1,4 +1,4 @@
-module my-service.com/transactions
+module myservice.com/transactions
 
 go 1.20
 

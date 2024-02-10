@@ -4,34 +4,34 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"my-service.com/transactions/internal/clients/filereader"
+	"myservice.com/transactions/internal/clients/filereader"
 )
 
 func TestConvertTransactionValue(t *testing.T) {
 	cases := []struct {
 		name           string
 		stringValue    string
-		expectedResult money
+		expectedResult Money
 	}{
 		{
 			name:           "success-debit-with-cents",
 			stringValue:    "-455.23",
-			expectedResult: money(-45523),
+			expectedResult: Money(-45523),
 		},
 		{
 			name:           "success-credit-with-cents",
 			stringValue:    "455.23",
-			expectedResult: money(45523),
+			expectedResult: Money(45523),
 		},
 		{
 			name:           "success-credit-with-cents",
 			stringValue:    "455.2",
-			expectedResult: money(45520),
+			expectedResult: Money(45520),
 		},
 		{
 			name:           "success-credit-with-no-cents",
 			stringValue:    "455",
-			expectedResult: money(45500),
+			expectedResult: Money(45500),
 		},
 	}
 
@@ -74,13 +74,9 @@ func TestGetAverages(t *testing.T) {
 		},
 	}
 
-	fileReader := filereader.New("some-file-name")
-
-	srv := New(fileReader)
-
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			actualAverageDebit, actualAverageCredit := srv.GetAverages(tc.transactions)
+			actualAverageDebit, actualAverageCredit := getAverages(tc.transactions)
 			assert.Equal(t, tc.expectedAverageDebit, actualAverageDebit)
 			assert.Equal(t, tc.expectedAverageCredit, actualAverageCredit)
 		})
@@ -137,13 +133,9 @@ func TestGetTotalBalance(t *testing.T) {
 		},
 	}
 
-	fileReader := filereader.New("some-file-name")
-
-	srv := New(fileReader)
-
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			actualResult := srv.GetTotalBalance(tc.transactions)
+			actualResult := getTotalBalance(tc.transactions)
 			assert.Equal(t, tc.expectedResult, actualResult)
 		})
 	}
@@ -182,13 +174,9 @@ func TestGetTransactionsByMonth(t *testing.T) {
 		},
 	}
 
-	fileReader := filereader.New("some-file-name")
-
-	srv := New(fileReader)
-
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			actualResult := srv.GetTransactionsByMonth(tc.transactions)
+			actualResult := getTransactionsByMonth(tc.transactions)
 			assert.Equal(t, tc.expectedResult, actualResult)
 		})
 	}
