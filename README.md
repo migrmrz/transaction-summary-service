@@ -23,9 +23,19 @@ send-email: false
 ```
 
 ### Docker
+#### Build
+```
+docker build -t transactions-summary-service .
+```
+
+#### Run
+```
+docker run --rm --name transactions-summary-service transactions-summary-service /app/transactions-summary-service/build/transactions-summary-service /app/transactions-summary-service/txns.csv migrmrz@gmail.com 
+```
 
 ### Example
 
+`make build`
 `make run FILE=txns/migrmrz/txns.csv EMAIL=migrmrz@gmail.com`
 
 ## Dependencies
