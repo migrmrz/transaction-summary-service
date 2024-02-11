@@ -18,20 +18,22 @@ type fileReader interface {
 	GetTransactions() ([]filereader.Transaction, error)
 }
 
-type EmailSender interface {
+type emailSender interface {
 	SendEmail(email sender.Email) error
 }
 
 type dbClient interface{}
 
 type Service struct {
-	fileReader fileReader
+	fileReader  fileReader
+	emailSender emailSender
 }
 
 // New creates a new Service
-func New(fr fileReader) Service {
+func New(fr fileReader, es emailSender) Service {
 	return Service{
-		fileReader: fr,
+		fileReader:  fr,
+		emailSender: es,
 	}
 }
 
@@ -46,6 +48,8 @@ func (s *Service) Run() error {
 
 	// Get debit and credit averages
 	averageDebit, averageCredit := getAverages(data)
+	averageDebitStr := fmt.Sprintf("%d.%d", Money(averageDebit).Dollars(), Money(averageDebit).Cents()*-1)
+	averageCreditStr := fmt.Sprintf("%d.%d", Money(averageCredit).Dollars(), Money(averageCredit).Cents())
 
 	log.Printf(
 		"averages... debit: %d.%d, credit: %d.%d\n",
@@ -55,17 +59,38 @@ func (s *Service) Run() error {
 
 	// Get total balance
 	totalBalance := getTotalBalance(data)
+	var totalBalanceStr string
 
 	if totalBalance < 0 {
-		log.Printf("total balance: %d.%d", Money(totalBalance).Dollars(), Money(totalBalance).Cents()*-1)
-	}
+		log.Printf("total balance: %d.%d\n", Money(totalBalance).Dollars(), Money(totalBalance).Cents()*-1)
 
-	log.Printf("total balance: %d.%d", Money(totalBalance).Dollars(), Money(totalBalance).Cents())
+		totalBalanceStr = fmt.Sprintf("%d.%d", Money(totalBalance).Dollars(), Money(totalBalance).Cents()*-1)
+
+	} else {
+		log.Printf("total balance: %d.%d", Money(totalBalance).Dollars(), Money(totalBalance).Cents())
+
+		totalBalanceStr = fmt.Sprintf("%d.%d", Money(totalBalance).Dollars(), Money(totalBalance).Cents())
+	}
 
 	// Get transaction by month
 	transactions := getTransactionsByMonth(data)
 	bs, _ := json.Marshal(transactions)
 	log.Printf("transaction count: %s", string(bs))
+
+	// Send email
+	email := sender.Email{
+		Name:                     "Someone",
+		Email:                    "",
+		TotalBalance:             totalBalanceStr,
+		TotalTransactionsByMonth: transactions,
+		AverageCreditAmount:      averageCreditStr,
+		AverageDebitAmount:       averageDebitStr,
+	}
+
+	err = s.emailSender.SendEmail(email)
+	if err != nil {
+		log.Printf("something happened while trying to send email: %s", err.Error())
+	}
 
 	return nil
 }

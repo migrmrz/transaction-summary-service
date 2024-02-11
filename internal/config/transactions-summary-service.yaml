@@ -1,0 +1,9 @@
+db:
+  file: db/transactions.db
+sendgrid:
+  sender: contact@migrmrz.dev
+  api-key: some-key
+  template-id: d-aacbaf6b707e44e3991bf46ff74abe62
+  max-idle-conn: 2
+  timeout: 5s
+  send-email: false

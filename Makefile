@@ -7,7 +7,7 @@ build:
 	GOOS=$(GOOS) GOARCH=$(GOARCH) APPNAME=$(APPNAME) ./scripts/build
 
 run:
-	./build/$(APPNAME) $(FILE) $(EMAIL) --conf=./internal/config
+	./build/$(APPNAME) $(FILE) $(EMAIL)
 
 clean:
 	rm -rf build

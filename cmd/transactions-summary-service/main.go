@@ -6,21 +6,19 @@ import (
 	"log"
 	"os"
 
-	"my-service.com/transactions/internal/clients/filereader"
-	"my-service.com/transactions/internal/config"
-	"my-service.com/transactions/internal/service"
+	"myservice.com/transactions/internal/clients/filereader"
+	"myservice.com/transactions/internal/clients/sender"
+	"myservice.com/transactions/internal/config"
+	"myservice.com/transactions/internal/service"
 )
 
 func main() {
-	fmt.Println("This it the main code")
-
 	// initialize configuration
 	configPath := flag.String("conf", "/etc/transactions-summary-service", "directory where config file is located")
-	flag.Parse()
 
-	_, err := config.GetConfig(*configPath)
+	conf, err := config.GetConfig(*configPath)
 	if err != nil {
-		log.Println("unable to read config file")
+		log.Printf("unable to read config file: %s", err.Error())
 	}
 
 	log.Println("validating args...")
@@ -33,22 +31,21 @@ func main() {
 
 	// Get file name and email from args
 	fileName := os.Args[1]
-	// email := os.Args[2]
-	_ = os.Args[2]
+	email := os.Args[2]
 
 	// Create file reader and get data
 	fileReader := filereader.New(fileName)
 
 	// Create Sendgrid client
-	fmt.Println("This part wil create sendgrid client")
+	emailSender := sender.New(conf.EmailSender, email)
 
 	// Create database client
 	fmt.Println("This part will create database client")
 
 	// Create service with clients interfaces
-	service := service.New(fileReader)
+	srv := service.New(fileReader, emailSender)
 
-	err = service.Run()
+	err = srv.Run()
 	if err != nil {
 		log.Printf("an error ocurred while running the service: %s", err.Error())
 	}
