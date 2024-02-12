@@ -1,6 +1,6 @@
 # transactions-summary-service
 
-Simple service that reads a transactions file in a csv format, processes it and logs the output. I can also send a report email with that data.
+Simple service that reads a transactions file in a csv format, processes it and logs the output. It can also send a report email with that data.
 
 Data:
 - Total balance
