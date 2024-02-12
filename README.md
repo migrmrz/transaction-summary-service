@@ -14,7 +14,7 @@ When processing, the following data will be collected to be sent:
 The most useful make targets for working locally are:
 
 * `make build`: Builds the service.
-* `make run FILE=/path/to/file EMAIL=email@example.com`: Starts the service. FILE is the path where the file to be processed is and EMAIL is the user's email to which the report will be sent.
+* `make run` 
 * `make clean`: Clean temporary files.
 
 Configuration file located in `internal/config/transactions-summary.yaml` has a key to turn on/off the sending of the email action so this can be switched back and forth depending on what the user wants to happen.
@@ -22,7 +22,13 @@ Configuration file located in `internal/config/transactions-summary.yaml` has a 
 send-email: false
 ```
 
+### Example
+
+`make build`
+`make run` 
+
 ### Docker
+
 #### Build
 ```
 docker build -t transactions-summary-service .
@@ -30,13 +36,12 @@ docker build -t transactions-summary-service .
 
 #### Run
 ```
-docker run --rm --name transactions-summary-service transactions-summary-service /app/transactions-summary-service/build/transactions-summary-service /app/transactions-summary-service/txns.csv migrmrz@gmail.com 
+docker run --name transactions-summary-service transactions-summary-service
 ```
-
-### Example
-
-`make build`
-`make run FILE=txns/migrmrz/txns.csv EMAIL=migrmrz@gmail.com`
+#### Start
+```
+docker start -a transactions-summary-service
+```
 
 ## Dependencies
 

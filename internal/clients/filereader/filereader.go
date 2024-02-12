@@ -4,7 +4,10 @@ import (
 	"encoding/csv"
 	"fmt"
 	"io"
+	"log"
 	"os"
+
+	"myservice.com/transactions/internal/config"
 )
 
 type Transaction struct {
@@ -13,23 +16,21 @@ type Transaction struct {
 	Txn  string
 }
 
-//type ReaderHandler interface {
-//	GetTransactions() ([]Transaction, error)
-//}
-
 type Reader struct {
 	fileName string
 }
 
 // New creates a new Reader client
-func New(fileName string) Reader {
+func New(conf config.Config) Reader {
 	return Reader{
-		fileName: fileName,
+		fileName: conf.TransactionsFile,
 	}
 }
 
 // GetTransactions opens and reads file from fileName to return data
 func (r Reader) GetTransactions() (data []Transaction, err error) {
+	log.Println("reading transactions file and getting data...")
+
 	// Reads file
 	file, err := os.Open(r.fileName)
 	if err != nil {

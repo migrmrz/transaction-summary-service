@@ -2,6 +2,7 @@ package sender
 
 import (
 	"fmt"
+	"log"
 	"net"
 	"net/http"
 	"time"
@@ -11,14 +12,7 @@ import (
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
-// type money uint64 // total value in cents
-
-// func (m money) Dollars() uint64 { return uint64(m) / 100 }
-// func (m money) Cents() uint64   { return uint64(m) % 100 }
-
 type Email struct {
-	Email                    string
-	Name                     string
 	TotalBalance             string
 	TotalTransactionsByMonth map[string]int
 	AverageCreditAmount      string
@@ -32,21 +26,25 @@ type Config struct {
 	MaxIdleConns  int           `mapstructure:"max-idle-conns"`
 	Timeout       time.Duration `mapstructure:"timeout"`
 	SendEmailFlag bool          `mapstructure:"send-email"`
+	ToUserName    string        `mapstructure:"to-user-name"`
+	ToEmail       string        `mapstructure:"to-email"`
 }
 
 type Sendgrid struct {
 	FromMail   string
 	ToMail     string
+	ToUserName string
 	TemplateID string
 	APIKey     string
 	SendFlag   bool
 	httpClient *http.Client
 }
 
-func New(conf Config, fromMail string) Sendgrid {
+func New(conf Config) Sendgrid {
 	return Sendgrid{
 		FromMail:   conf.FromMail,
-		ToMail:     fromMail,
+		ToMail:     conf.ToEmail,
+		ToUserName: conf.ToUserName,
 		TemplateID: conf.TemplateID,
 		APIKey:     conf.APIKey,
 		SendFlag:   conf.SendEmailFlag,
@@ -81,8 +79,8 @@ func (sg Sendgrid) SendEmail(email Email) error {
 		return fmt.Errorf("email will not be sent. If this was intended otherwise, check configuration file")
 	}
 
-	from := mail.NewEmail("User", sg.FromMail)
-	to := mail.NewEmail(email.Name, sg.ToMail)
+	from := mail.NewEmail("Admin", sg.FromMail)
+	to := mail.NewEmail(sg.ToUserName, sg.ToMail)
 	content := mail.NewContent("text/html", " ")
 	m := mail.NewV3MailInit(from, "", to, content)
 	m.SetTemplateID(sg.TemplateID)
@@ -91,6 +89,7 @@ func (sg Sendgrid) SendEmail(email Email) error {
 	m.Personalizations[0].SetDynamicTemplateData("total_balance", email.TotalBalance)
 	m.Personalizations[0].SetDynamicTemplateData("debit_amount", email.AverageDebitAmount)
 	m.Personalizations[0].SetDynamicTemplateData("credit_amount", email.AverageCreditAmount)
+	m.Personalizations[0].SetDynamicTemplateData("name", sg.ToUserName)
 
 	transactionsByMonth := make([]map[string]string, len(email.TotalTransactionsByMonth))
 
@@ -114,6 +113,9 @@ func (sg Sendgrid) SendEmail(email Email) error {
 
 	// Send request
 	client := &rest.Client{HTTPClient: sg.httpClient}
+
+	log.Println("sending email...")
+
 	response, err := client.Send(request)
 	if err != nil {
 		return err
@@ -124,6 +126,8 @@ func (sg Sendgrid) SendEmail(email Email) error {
 
 		return err
 	}
+
+	log.Println("done...")
 
 	return nil
 }

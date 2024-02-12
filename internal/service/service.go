@@ -22,8 +22,6 @@ type emailSender interface {
 	SendEmail(email sender.Email) error
 }
 
-type dbClient interface{}
-
 type Service struct {
 	fileReader  fileReader
 	emailSender emailSender
@@ -75,12 +73,10 @@ func (s *Service) Run() error {
 	// Get transaction by month
 	transactions := getTransactionsByMonth(data)
 	bs, _ := json.Marshal(transactions)
-	log.Printf("transaction count: %s", string(bs))
+	log.Printf("transaction count by month: %s", string(bs))
 
 	// Send email
 	email := sender.Email{
-		Name:                     "Someone",
-		Email:                    "",
 		TotalBalance:             totalBalanceStr,
 		TotalTransactionsByMonth: transactions,
 		AverageCreditAmount:      averageCreditStr,

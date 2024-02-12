@@ -11,8 +11,9 @@ type DBConfig struct {
 }
 
 type Config struct {
-	db          DBConfig      `mapstructure:"db"`
-	EmailSender sender.Config `mapstructure:"sendgrid"`
+	TransactionsFile string        `mapstructure:"transactions-file"`
+	db               DBConfig      `mapstructure:"db"`
+	EmailSender      sender.Config `mapstructure:"sendgrid"`
 }
 
 // GetConfig returns data from config file
