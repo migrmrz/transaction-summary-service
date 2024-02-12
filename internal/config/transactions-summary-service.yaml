@@ -3,7 +3,7 @@ db:
   file: db/transactions.db
 sendgrid:
   sender: contact@migrmrz.dev
-  api-key: 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
+  api-key: some-key 
   template-id: d-aacbaf6b707e44e3991bf46ff74abe62
   max-idle-conn: 2
   timeout: 5s
