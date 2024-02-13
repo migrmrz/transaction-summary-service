@@ -8,6 +8,9 @@ Data:
 - Average credit amount
 - Average debit amount
 
+## Service project structure
+![Service Diagram](assets/img/transactions-summary-service.png)
+
 ## How to run the code
 
 The current csv file to be read is located in `txns/migrmrz/txns.csv` which, on build, will be copied over to a mount directory inside the docker container. The new location inside the container should be `/mnt/transactions/<usr-folder>/txns.csv` and that needs to be set inside the configuration file located in `internal/config/transactions-summary.yaml` with `transactions-file`.
