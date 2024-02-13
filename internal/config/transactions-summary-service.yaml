@@ -1,4 +1,4 @@
-transactions-file: /mnt/transactions/migrmrz/txns.csv
+transactions-file: txns.csv
 db:
   file: db/transactions.db
 sendgrid:

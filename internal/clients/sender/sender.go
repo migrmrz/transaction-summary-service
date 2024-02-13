@@ -20,14 +20,14 @@ type Email struct {
 }
 
 type Config struct {
-	FromMail      string        `mapstructure:"sender"`
-	APIKey        string        `mapstructure:"api-key"`
-	TemplateID    string        `mapstructure:"template-id"`
-	MaxIdleConns  int           `mapstructure:"max-idle-conns"`
-	Timeout       time.Duration `mapstructure:"timeout"`
-	SendEmailFlag bool          `mapstructure:"send-email"`
-	ToUserName    string        `mapstructure:"to-user-name"`
-	ToEmail       string        `mapstructure:"to-email"`
+	FromMail      string        `mapstructure:"sender" yaml:"sender"`
+	APIKey        string        `mapstructure:"api-key" yaml:"api-key"`
+	TemplateID    string        `mapstructure:"template-id" yaml:"template-id"`
+	MaxIdleConns  int           `mapstructure:"max-idle-conns" yaml:"max-idle-conns"`
+	Timeout       time.Duration `mapstructure:"timeout" yaml:"timeout"`
+	SendEmailFlag bool          `mapstructure:"send-email" yaml:"send-email"`
+	ToUserName    string        `mapstructure:"to-user-name" yaml:"to-user-name"`
+	ToEmail       string        `mapstructure:"to-email" yaml:"to-email"`
 }
 
 type Sendgrid struct {

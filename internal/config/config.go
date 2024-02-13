@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/spf13/viper"
+	"gopkg.in/yaml.v3"
 
 	"myservice.com/transactions/internal/clients/sender"
 )
@@ -11,24 +11,18 @@ type DBConfig struct {
 }
 
 type Config struct {
-	TransactionsFile string        `mapstructure:"transactions-file"`
-	db               DBConfig      `mapstructure:"db"`
-	EmailSender      sender.Config `mapstructure:"sendgrid"`
+	TransactionsFile string        `mapstructure:"transactions-file" yaml:"transactions-file"`
+	EmailSender      sender.Config `mapstructure:"sendgrid" yaml:"sendgrid"`
 }
 
 // GetConfig returns data from config file
-func GetConfig(confPath string) (Config, error) {
+func GetConfigFromS3(data []byte) (Config, error) {
 	var conf Config
 
-	viper.SetConfigName("transactions-summary-service")
-	viper.AddConfigPath(confPath)
-
-	err := viper.ReadInConfig()
+	err := yaml.Unmarshal(data, &conf)
 	if err != nil {
-		return conf, err
+		return Config{}, err
 	}
 
-	err = viper.Unmarshal(&conf)
-
-	return conf, err
+	return conf, nil
 }
